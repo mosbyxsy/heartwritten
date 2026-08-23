@@ -1,0 +1,696 @@
+/* ==================== 全局基础与可访问性 ==================== */
+
+:root {
+  font-family: Inter, 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  color: #f9f4fc;
+  background: #0d0913;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  background: #0d0913;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+button {
+  font: inherit;
+}
+
+button:focus-visible {
+  outline: 2px solid #ff8eb1;
+  outline-offset: 4px;
+}
+
+/* ==================== 应用外壳与环境氛围 ==================== */
+
+.appShell {
+  position: relative;
+  z-index: 0;
+  width: min(1440px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: clamp(20px, 3vw, 44px);
+}
+
+.ambient {
+  position: fixed;
+  z-index: -2;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ambientOrb {
+  position: absolute;
+  width: min(48vw, 660px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: .12;
+  background: radial-gradient(circle, rgba(141, 70, 199, .68), transparent 68%);
+}
+
+.ambientOrb:first-child {
+  top: -28%;
+  left: -12%;
+}
+
+.ambientOrb:nth-child(2) {
+  right: -16%;
+  bottom: -38%;
+  background: radial-gradient(circle, rgba(220, 47, 111, .55), transparent 68%);
+}
+
+.noise {
+  position: absolute;
+  inset: 0;
+  opacity: .025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+}
+
+/* ==================== 顶部品牌与生成状态 ==================== */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: clamp(22px, 3vh, 34px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brandMark {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 16px;
+  color: #ff719d;
+  background: linear-gradient(145deg, rgba(255, 91, 143, .17), rgba(255, 255, 255, .035));
+  box-shadow: inset 0 1px rgba(255, 255, 255, .07), 0 12px 40px rgba(0, 0, 0, .23);
+  font-size: 23px;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 4px;
+  color: #a998b7;
+  font-family: 'Cascadia Code', 'SFMono-Regular', Consolas, monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .18em;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: clamp(20px, 2.1vw, 29px);
+  font-weight: 600;
+  letter-spacing: -.035em;
+}
+
+.statusPill {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 14px;
+  border: 1px solid rgba(255, 255, 255, .1);
+  border-radius: 999px;
+  color: #bbaec5;
+  background: rgba(255, 255, 255, .035);
+  font-size: 12px;
+}
+
+.statusPill > span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #a06bff;
+  box-shadow: 0 0 12px currentColor;
+  animation: statusBlink 1.4s ease-in-out infinite;
+}
+
+.statusPill > span.done {
+  color: #ff6d99;
+  background: currentColor;
+  animation: none;
+}
+
+/* ==================== 双面板工作区 ==================== */
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(14px, 2vw, 26px);
+  min-height: 480px;
+  height: clamp(500px, 66vh, 720px);
+}
+
+.panel {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .09);
+  border-radius: clamp(18px, 2vw, 26px);
+  background: rgba(23, 17, 31, .78);
+  transition: border-color .5s ease, background .5s ease, box-shadow .5s ease, transform .7s cubic-bezier(.2, .8, .2, 1);
+}
+
+.panelHeader {
+  display: flex;
+  min-height: 54px;
+  align-items: center;
+  gap: 11px;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, .075);
+  color: #988ca3;
+  font-family: 'Cascadia Code', 'SFMono-Regular', Consolas, monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .11em;
+}
+
+/* ==================== 左侧代码编辑器 ==================== */
+
+.windowDots {
+  display: flex;
+  gap: 5px;
+  margin-right: 3px;
+}
+
+.windowDots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff6f8e;
+}
+
+.windowDots i:nth-child(2) {
+  background: #f8bd69;
+}
+
+.windowDots i:nth-child(3) {
+  background: #63caa1;
+}
+
+.typingState {
+  margin-left: auto;
+  color: #bc8fff;
+}
+
+.styleEditor {
+  display: flex;
+  flex-direction: column;
+}
+
+.codeViewport {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-color: rgba(255, 255, 255, .16) transparent;
+  scrollbar-width: thin;
+  overscroll-behavior: contain;
+}
+
+.codeViewport::-webkit-scrollbar {
+  width: 7px;
+}
+
+.codeViewport::-webkit-scrollbar-thumb {
+  border-radius: 99px;
+  background: rgba(255, 255, 255, .14);
+}
+
+.styleEditor pre {
+  min-height: 100%;
+  margin: 0;
+  padding: clamp(18px, 2.2vw, 30px);
+  color: #d6ccdf;
+  font-family: 'Cascadia Code', 'SFMono-Regular', Consolas, monospace;
+  font-size: clamp(11px, .9vw, 13px);
+  line-height: 1.75;
+  tab-size: 2;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.styleEditor code::after {
+  /* 伪元素模拟输入光标；暂停或完成时由下方规则隐藏。 */
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 1.15em;
+  margin-left: 3px;
+  vertical-align: -.18em;
+  background: #ff7ea6;
+  animation: cursorBlink .9s step-end infinite;
+}
+
+.styleEditor:not(.isTyping) code::after {
+  display: none;
+}
+
+.codeProgress {
+  height: 2px;
+  background: rgba(255, 255, 255, .04);
+}
+
+.codeProgress span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: #9565de;
+  transition: width .2s linear;
+}
+
+/* ==================== 右侧爱心预览舞台 ==================== */
+
+.heartWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.stageHeader {
+  justify-content: space-between;
+}
+
+.liveDot {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #817689;
+  letter-spacing: .08em;
+}
+
+.liveDot::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.liveDot.isReady {
+  color: #ff789e;
+}
+
+.heartScene {
+  position: relative;
+  display: grid;
+  flex: 1;
+  min-height: 280px;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.heartScene::before {
+  /* loveStyle 逐步注入后会提高透明度并放大，形成爱心背后的柔光。 */
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: 50%;
+  width: min(68%, 360px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: .12;
+  background: radial-gradient(circle, rgba(255, 72, 129, .38), rgba(121, 67, 173, .12) 44%, transparent 70%);
+  transform: translate(-50%, -50%) scale(.72);
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+.heartButton {
+  position: relative;
+  z-index: 2;
+  width: 210px;
+  height: 210px;
+  padding: 0;
+  border: 0;
+  outline-offset: -10px;
+  background: transparent;
+  transition: transform .28s cubic-bezier(.2, .8, .2, 1), filter .4s ease;
+}
+
+.heartButton:disabled {
+  cursor: wait;
+}
+
+.heartShape {
+  /* 初始形态是小方块；loveStyle 会逐步覆盖尺寸、圆角和旋转形成心形。 */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: 72px;
+  height: 72px;
+  margin: -36px;
+  border-radius: 18px;
+  background: #b24c76;
+  transform: rotate(0);
+  transition: width .7s ease, height .7s ease, margin .7s ease, border-radius .7s ease, background .7s ease, box-shadow .7s ease, transform .7s ease;
+}
+
+.heartEcho {
+  /* 与主体共用几何结构，完成后作为向外扩散的脉冲光晕。 */
+  z-index: -1;
+  opacity: 0;
+}
+
+.orbit {
+  /* 椭圆轨道本质上是经 scaleY 压扁的圆；最终 CSS 再让它持续旋转。 */
+  position: absolute;
+  width: min(70%, 350px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 255, 255, .105);
+  border-radius: 50%;
+  opacity: 0;
+  transform: rotate(-12deg) scaleY(.42);
+  transition: opacity 1s ease;
+}
+
+.orbit::after {
+  content: '';
+  position: absolute;
+  top: 47%;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #c498ff;
+  box-shadow: 0 0 14px #b97cff;
+}
+
+.orbitTwo {
+  width: min(55%, 275px);
+  transform: rotate(35deg) scaleY(.52);
+}
+
+.orbitTwo::after {
+  top: 15%;
+  right: 12%;
+  width: 5px;
+  height: 5px;
+  background: #ff83a8;
+  box-shadow: 0 0 14px #ff5f91;
+}
+
+.spark {
+  position: absolute;
+  z-index: 1;
+  opacity: 0;
+  color: #ffc6da;
+  transition: opacity .8s ease;
+}
+
+.sparkOne {
+  top: 26%;
+  left: 25%;
+  font-size: 17px;
+}
+
+.sparkTwo {
+  right: 24%;
+  bottom: 29%;
+  color: #c2a0ff;
+  font-size: 12px;
+  animation-delay: -.8s !important;
+}
+
+.sparkThree {
+  top: 31%;
+  right: 21%;
+  font-size: 32px;
+  animation-delay: -1.4s !important;
+}
+
+.loveMessage {
+  display: flex;
+  min-height: 92px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  padding: 0 22px 20px;
+  opacity: .48;
+  text-align: center;
+  transform: translateY(8px);
+  transition: opacity .8s ease, transform .8s ease;
+}
+
+.loveMessage.isVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.loveMessage strong {
+  font-size: clamp(19px, 2vw, 25px);
+  font-weight: 600;
+  letter-spacing: .14em;
+}
+
+.loveMessage span {
+  color: #a99caf;
+  font-size: 12px;
+}
+
+/* ==================== 底部播放控制 ==================== */
+
+.controlBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-top: clamp(18px, 2.4vh, 28px);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.controlButton {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 15px;
+  border: 1px solid rgba(255, 255, 255, .11);
+  border-radius: 11px;
+  color: #c8bdcf;
+  background: rgba(255, 255, 255, .04);
+  cursor: pointer;
+  font-size: 12px;
+  transition: border-color .2s ease, color .2s ease, background .2s ease, transform .2s ease;
+}
+
+.controlButton:hover:not(:disabled) {
+  border-color: rgba(255, 126, 167, .45);
+  color: #fff;
+  background: rgba(255, 102, 150, .09);
+  transform: translateY(-1px);
+}
+
+.controlButton.primary {
+  border-color: rgba(255, 102, 150, .26);
+  color: #fff;
+  background: linear-gradient(135deg, rgba(155, 85, 219, .38), rgba(217, 57, 113, .35));
+}
+
+.controlButton:disabled {
+  opacity: .34;
+  cursor: not-allowed;
+}
+
+.controlBar p {
+  margin: 0;
+  color: #71667a;
+  font-size: 11px;
+  letter-spacing: .04em;
+}
+
+.controlBar p span {
+  margin-right: 6px;
+  color: #b087e4;
+}
+
+/* ==================== 全屏爱心雨 ==================== */
+
+.rainLayer {
+  /* Portal 挂载到 body 后覆盖整个视口，但不接管任何鼠标或触摸事件。 */
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.rainDrop {
+  /* 每个变量均由 HeartRain.jsx 生成；这里只定义统一的动画表现。 */
+  position: absolute;
+  top: -50px;
+  left: var(--left);
+  color: #ff537f;
+  opacity: 0;
+  filter: drop-shadow(0 5px 8px rgba(149, 22, 68, .24));
+  font-size: var(--size);
+  animation: heartFall var(--duration) cubic-bezier(.22, .65, .42, 1) var(--delay) forwards;
+  will-change: transform, opacity;
+}
+
+/* ==================== 动画关键帧 ==================== */
+
+@keyframes cursorBlink {
+  50% { opacity: 0; }
+}
+
+@keyframes statusBlink {
+  50% { opacity: .35; transform: scale(.7); }
+}
+
+@keyframes float {
+  to { transform: translate3d(5%, 8%, 0) scale(1.08); }
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: rotate(45deg) scale(1); }
+  12% { transform: rotate(45deg) scale(1.08); }
+  24% { transform: rotate(45deg) scale(1); }
+  36% { transform: rotate(45deg) scale(1.13); }
+  54% { transform: rotate(45deg) scale(1); }
+}
+
+@keyframes echo {
+  0% { opacity: .3; transform: rotate(45deg) scale(.96); }
+  70%, 100% { opacity: 0; transform: rotate(45deg) scale(1.55); }
+}
+
+@keyframes orbitSpin {
+  to { transform: rotate(348deg) scaleY(.42); }
+}
+
+@keyframes twinkle {
+  to { opacity: .25; transform: scale(.7) rotate(35deg); }
+}
+
+@keyframes heartFall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -20px, 0) rotate(0);
+  }
+  10% { opacity: var(--opacity); }
+  82% { opacity: var(--opacity); }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--drift), calc(100vh + 90px), 0) rotate(var(--rotate));
+  }
+}
+
+/* ==================== 响应式布局 ==================== */
+
+@media (max-width: 840px) {
+  /* 平板及以下改为上下布局，并为两个面板提供独立的合理高度。 */
+  .appShell {
+    padding: 20px;
+  }
+
+  .workspace {
+    height: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .styleEditor {
+    height: min(48vh, 480px);
+  }
+
+  .heartWrapper {
+    min-height: 500px;
+  }
+
+  .controlBar {
+    padding-bottom: 12px;
+  }
+}
+
+@media (max-width: 560px) {
+  /* 手机端进一步压缩留白，并将状态胶囊简化为 LIVE 标记。 */
+  .appShell {
+    padding: 16px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+  }
+
+  .brandMark {
+    width: 45px;
+    height: 45px;
+    border-radius: 14px;
+  }
+
+  .statusPill {
+    padding: 8px 10px;
+    font-size: 0;
+  }
+
+  .statusPill::after {
+    content: 'LIVE';
+    font-size: 9px;
+  }
+
+  .styleEditor {
+    height: 52vh;
+    min-height: 390px;
+  }
+
+  .heartWrapper {
+    min-height: 440px;
+  }
+
+  .heartScene {
+    min-height: 250px;
+  }
+
+  .controlBar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .controlBar p {
+    order: -1;
+  }
+}
+
+/* ==================== 系统动态效果偏好 ==================== */
+
+@media (prefers-reduced-motion: reduce) {
+  /* 保留最终视觉状态，但把非必要动画与过渡压缩到近乎瞬时。 */
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
